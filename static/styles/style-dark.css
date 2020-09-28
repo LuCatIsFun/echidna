@@ -416,9 +416,6 @@ select option,
   color: #FCFCFC;
 }
 @media only screen and (max-width: 580px) {
-  .nav__item a.active {
-    color: #0D86FF;
-  }
   .nav__item a.active:hover {
     color: #0D86FF;
   }
