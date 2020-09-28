@@ -7,6 +7,7 @@ django-ratelimit==3.0.1
 djangorestframework==3.11.0
 django-uuslug==1.2.0
 
-Markdown==3.2.2
-pymdown-extensions==7.1
+
 mysqlclient==1.4.6
+uwsgi==2.0.19.1
+six==1.15.0
