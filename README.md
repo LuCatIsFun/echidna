@@ -4,10 +4,9 @@
 
 Echidna是一个基于`Python3.7`和`Django3`的博客系统
 
-<div align="center">
-	<img src="https://img.illi.me/83f12b0989d078ef14c3bb9710fb51cd" alt="首页" width="500">
-	<img src="https://img.illi.me/01e9843789f718601b008e531798ec69" alt="文章" width="500">
-</div>
+![首页](example/index.jpg "首页")
+![文章](example/article.jpg "文章")
+
 
 ## 特点
 * 好玩的登录方式（使用终端登录）
