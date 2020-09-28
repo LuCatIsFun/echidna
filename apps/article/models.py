@@ -42,7 +42,7 @@ class Article(models.Model):
     }
 
     id = models.CharField(max_length=30, primary_key=True)
-    slug = models.SlugField(editable=False)
+    slug = models.SlugField(max_length=300, editable=False)
 
     # article meta data
     title = models.CharField(max_length=200, verbose_name='标题')
