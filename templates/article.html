@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block css %}
+    <link rel="stylesheet" type="text/css" href="/static/styles/article-menu-style.css"/>
+{% endblock %}
+{% block content %}
+    <div class="box box-content">
+        <!-- Post -->
+        <div class="pb-3">
+            <header class="header-post">
+                <h1 class="title title--h1">{{ article_info.title}}</h1>
+                <div class="header-post__image-wrap">
+                    <img class="cover lazyload" src="{{article_info.banner}}" data-zoom alt="" />
+                </div>
+            </header>
+            <div class="caption-post">
+                {{ article_info.content|safe }}
+            </div>
+            <footer class="footer-post">
+                {% if settings.facebook %}<a class="footer-post__share" href="{{ settings.facebook }}"><i class="font-icon icon-facebook"></i><span>Facebook</span></a>{% endif %}
+                {% if settings.twitter %}<a class="footer-post__share" href="{{ settings.twitter}}"><i class="font-icon icon-twitter"></i><span>Twitter</span></a>{% endif %}
+                {% if settings.github %}<a class="footer-post__share" href="{{ settings.github }}"><i class="font-icon icon-github"></i><span>Github</span></a>{% endif %}
+            </footer>
+        </div>
+
+        <div class="box-inner box-inner--rounded">
+            <!-- Comment -->
+            <div class="comment-box">
+                {% if article_info.show_comment %}
+                {% if settings.disqus_url %}
+                <div id="disqus_thread"></div>
+                {% else %}
+                <div class="comment-box__inner">
+                    <div class="comment-box__body" style="text-align: center">
+                        <p>管理员未配置评论</p>
+                    </div>
+                </div>
+                {% endif %}
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+    {% if request.user.is_authenticated %}
+    <div class="btnSlideNav slideOpen" onclick="window.open('{% url 'edit_article' article_info.id %}')"></div>
+    {% endif %}
+
+{% endblock %}
+{% block js %}
+    <script src="/static/js/prism.js"></script>
+    {% if article_info.show_comment and settings.disqus_url %}
+    <script>
+    window.disqus_config = function () {
+        this.page.url = '{{ request.build_absolute_uri }}';
+        this.page.identifier = '{% url 'article' article_info.slug %}';
+    };
+    function loadDisqus() {
+        let d = document, s = d.createElement('script');
+        s.src = 'https://{{ settings.disqus_url }}/embed.js';
+        s.setAttribute('data-timestamp', + new Date());
+        (d.head || d.body).appendChild(s);
+    }
+    </script>
+    <script src="/static/js/disqus.js"></script>
+    {% endif %}
+    {% if request.user.is_authenticated %}
+    <script src="/static/js/article-menu.js"></script>
+    {% endif %}
+{% endblock %}

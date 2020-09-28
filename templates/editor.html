@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8" />
+    <title>{{ settings.title }}</title>
+
+	<!-- Meta Data -->
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="format-detection" content="telephone=no"/>
+    <meta name="format-detection" content="address=no"/>
+    <meta name="author" content="{{ settings.author }}" />
+    <meta name="description" content="{{ settings.description }}" />
+
+    <!--分享到其他平台时会自动加载的样式 https://segmentfault.com/a/1190000020199687 -->
+    <meta property="og:title" content="ArtTemplate" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="your url website" />
+    <meta property="og:image" content="/static/images/social.jpg" />
+    <meta property="og:description" content="{{ settings.description }}" />
+    <meta property="og:site_name" content="{{ settings.title }}" />
+
+	<!-- Favicons -->
+	<link rel="apple-touch-icon" sizes="144x144" href="/static/images/favicons/apple-touch-icon-144x144.png">
+	<link rel="apple-touch-icon" sizes="114x114" href="/static/images/favicons/apple-touch-icon-114x114.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="/static/images/favicons/apple-touch-icon-72x72.png">
+	<link rel="apple-touch-icon" sizes="57x57" href="/static/images/favicons/apple-touch-icon-57x57.png">
+	<link rel="shortcut icon" href="/static/images/favicons/favicon.ico">
+    <link rel="stylesheet" type="text/css" href="/static/styles/editor.css"/>
+    <link rel="stylesheet" type="text/css" href="/static/styles/prism.css"/>
+    <link rel="stylesheet" type="text/css" href="/static/antd/antd.min.css"/>
+    <link rel="stylesheet" type="text/css" href="/static/antd/fix-antd.css"/>
+    <style>
+        /* only this page */
+        .ant-form-item {
+            margin-bottom: 0 !important;
+        }
+    </style>
+    <script>
+    {% if article_info %}
+        var article_id = '{{ article_info.id }}';
+        var is_edit = true;
+        var article_path = '{% url 'article' article_info.slug %}'
+    {% else %}
+        var article_id = null;
+        var is_edit = false;
+    {% endif %}
+    </script>
+
+</head>
+<body>
+    <div class="next-level-post-editor">
+       <div class="mid">
+          <main>
+             <section class="title">
+                <input type="text" id="title" placeholder="写一个漂亮的标题吧 😸" />
+             </section>
+             <section class="editor">
+                <div class="editor-container">
+                    <textarea id="editor"></textarea>
+                </div>
+             </section>
+          </main>
+          <aside>
+             <section class="settings">
+                 <div id="app">
+                     <template>
+                           <a-form
+                                ref="ruleForm"
+                                :model="form"
+                                :rules="rules"
+                              >
+                               <a-divider>快捷操作</a-divider>
+                               <a-button size="small" @click="save_draft">
+                                   保存草稿
+                               </a-button>
+                               <a-modal v-model:visible="save_draft_model_visible" title="保存草稿" @ok="handleSaveModelOk">
+                                <template v-slot:footer>
+                                    <a-button key="back" @click="handleSaveModelCancel">
+                                    返回
+                                    </a-button>
+                                    <a-button type="primary" :loading="save_draft_loading" @click="handleSaveModelOk">
+                                    提交
+                                    </a-button>
+                                </template>
+                                <p>将当前内容保存为草稿，当内容不慎丢失时，你可以选择最近的草稿恢复</p>
+                                <p>Tips：为草稿写一些备注是一个不错的习惯哦</p>
+                                <p>放心，我们会好好保存的 😉</p>
+
+                                <a-textarea v-model:value="note" :rows="4" placeholder="建议书写备注，可提高草稿辨识度哦~" maxlength="200" style="margin-top: 20px"/>
+
+                               </a-modal>
+                               <a-button size="small" @click="restore_draft">
+                                   从草稿中恢复
+                               </a-button>
+                                <a-drawer
+                                    title="草稿箱"
+                                    width="400"
+                                    :closable="false"
+                                    :visible="restore_draft_drawer_visible"
+                                    @close="RestoreDraftDrawerClose"
+                                >
+                                    <a-drawer
+                                    title="预览"
+                                    width="500"
+                                    :closable="false"
+                                    :visible="preview_draft_drawer_visible"
+                                    @close="PreviewDraftDrawerClose"
+                                    >
+                                    <a-spin tip="加载预览中..." :spinning="preview_draft_loading" :delay="300">
+                                        <div id="preview-draft-title" class="title"></div>
+                                        <a-divider></a-divider>
+
+                                        <div id="preview-draft">
+                                        </div>
+                                    </a-spin>
+                                    </a-drawer>
+                                    <a-tabs :tabBarGutter="3" size="large" :activeKey="draft_status_key"
+                                            :defaultActiveKey="draft_status_key" v-model="draft_status_key"
+                                            @change="DraftTabChange"
+                                    >
+                                        <a-tab-pane key="2" tab="热草稿">
+                                            <a-alert message="热草稿是接近实时保存的草稿。当内容发生变动后30秒且没有再次修改时，编辑器将自动保存当前内容的副本。" type="success"></a-alert>
+                                            <a-alert message="热草稿每篇文章有且只有一个，不会保存修改历史。" type="warning" show-icon closable></a-alert>
+                                            <a-descriptions v-if="preview_hot_draft_list.length > 0" title="详情" bordered style="padding-top: 30px">
+                                                <a-descriptions-item label="最后保存时间" :span="3">
+                                                    {[preview_hot_draft_list[0].create_date_time]}
+                                                </a-descriptions-item>
+                                                <a-descriptions-item label="预览">
+                                                    <a-button size="small" type="link" @click="PreviewDraftDrawerOpen(null)">点击预览</a-button>
+                                                </a-descriptions-item>
+                                            </a-descriptions>
+                                            <div v-else class="preview-draft-void-block">
+                                                <img class="preview-draft-void-image" src="/static/images/void.svg">
+                                                <p class="preview-draft-void-tips">还没有草稿哦~ 😳</p>
+                                            </div>
+
+                                        </a-tab-pane>
+                                        <a-tab-pane key="1" tab="手动保存">
+                                            <a-alert message="手动保存的草稿将会保存在这里，超过存储上限10个后，新草稿将顶替最旧的草稿" type="success"></a-alert>
+                                            <a-alert message="点击可以预览草稿哦" type="info" show-icon closable></a-alert>
+
+                                            <a-radio-group style="padding-top: 10px" v-model:value="preview_draft_id" v-if="preview_manual_draft_list.length > 0" @change="PreviewDraftChange">
+                                                <a-radio v-for="item in preview_manual_draft_list" :key="item.id" :style="radioStyle" :value="item.id">
+                                                            {[item.create_date_time]}
+                                                            ：{[item.note]}
+                                                </a-radio>
+                                            </a-radio-group>
+                                            <div v-else class="preview-draft-void-block">
+                                                <img class="preview-draft-void-image" src="/static/images/void.svg">
+                                                <p class="preview-draft-void-tips">还没有草稿哦~ 😳</p>
+                                            </div>
+                                        </a-tab-pane>
+                                        <a-tab-pane key="0" tab="自动保存">
+                                            <a-alert message="编辑器内容发生变更后，每隔10分钟将会自动保存一次，超过存储上限10个后，新草稿将顶替最旧的草稿" type="success"></a-alert>
+                                            <a-alert message="点击可以预览草稿哦" type="info" show-icon closable></a-alert>
+
+                                            <a-radio-group style="padding-top: 10px" v-model:value="preview_draft_id" v-if="preview_auto_draft_list.length > 0" @change="PreviewDraftChange">
+                                                <a-radio v-for="item in preview_auto_draft_list" :key="item.id" :style="radioStyle" :value="item.id">
+                                                            {[item.create_date_time]}
+                                                            ：{[item.note]}
+                                                </a-radio>
+                                            </a-radio-group>
+                                            <div v-else class="preview-draft-void-block">
+                                                <img class="preview-draft-void-image" src="/static/images/void.svg">
+                                                <p class="preview-draft-void-tips">还没有草稿哦~ 😳</p>
+                                            </div>
+                                        </a-tab-pane>
+                                    </a-tabs>
+
+                                <div
+                                :style="{
+                                    position: 'absolute',
+                                    bottom: 0,
+                                    width: '100%',
+                                    borderTop: '1px solid #e8e8e8',
+                                    padding: '10px 16px',
+                                    textAlign: 'right',
+                                    left: 0,
+                                    background: '#fff',
+                                    borderRadius: '0 0 4px 4px',
+                                }"
+                                >
+                                    <a-button style="marginRight: 8px" @click="RestoreDraftDrawerClose">
+                                    返回
+                                    </a-button>
+                                    <a-button type="primary" :loading="save_draft_button_loading" @click="RestoreDraftDrawerSubmit">
+                                    恢复草稿
+                                    </a-button>
+                                    </div>
+                                </a-drawer>
+{#                               <a-button size="small" id="use-template">#}
+{#                                   选择模版#}
+{#                               </a-button>#}
+
+                               <a-divider>文章信息</a-divider>
+                                <a-form-item label="封面" name="banner">
+                                    <a-upload
+                                        v-model:fileList="form.banner"
+                                        :file-list="form.banner"
+                                        name="file"
+                                        accept=".jpg,.jpeg,.png"
+                                        list-type="picture-card"
+                                        :show-upload-list="true"
+                                        action="/api/article/upload/banner/"
+                                        :before-upload="beforeUploadPreviewBanner"
+                                        @change="handleUploadPreviewBannerChange"
+                                        @preview="handleUploadPreviewBannerPreview"
+                                    >
+                                        <div v-if="form.banner.length < 1">
+                                            <div class="ant-upload-text" :loading="upload_loading">上传封面</div>
+                                        </div>
+                                    </a-upload>
+                                    <a-modal :visible="previewVisible" width="80vh" :closable="false" :footer="null" @cancel="handleUploadPreviewBannerCancel">
+                                        <img class="preview_image" :src="previewImage" />
+                                    </a-modal>
+                                </a-form-item>
+
+                                <a-form-item label="标签" name="region">
+                                  <a-select v-model:value="form.tags" mode="tags" :token-separators="[',']" placeholder="不存在的标签会直接被创建哦~">
+                                    {% for tag in tag_info %}
+                                    <a-select-option value="{{ tag }}">
+                                      {{ tag }}
+                                    </a-select-option>
+                                    {% endfor %}
+                                  </a-select>
+                                </a-form-item>
+                                <a-form-item label="分组" name="region">
+                                  <a-select v-model:value="form.groups" mode="tags" :token-separators="[',']" placeholder="不存在的分组会直接被创建哦~">
+                                    {% for group in group_info %}
+                                    <a-select-option value="{{ group }}">
+                                      {{ group }}
+                                    </a-select-option>
+                                    {% endfor %}
+                                  </a-select>
+                                </a-form-item>
+                               <a-divider>文章权限</a-divider>
+                               <a-collapse>
+                                    <a-collapse-panel key="1" header="阅读权限">
+                                        <a-alert v-if="form.access_status===2" message="设置密码后的文章在未登录状态下将不会展示在文章列表及搜索结果中，用户只能通过访问文章链接打开页面" type="warning" show-icon></a-alert>
+                                        <a-alert v-else-if="form.access_status===1" message="需要登陆后查看，只有你自己可见" type="info" show-icon></a-alert>
+                                        <a-alert v-else message="所有人都可以看到这篇文章" type="info" show-icon></a-alert>
+
+                                        <a-form-item label="可见性" name="access_status">
+                                            <a-radio-group v-model:value="form.access_status">
+                                                <a-radio :value="0">
+                                                公开
+                                                </a-radio>
+                                                <a-radio :value="1">
+                                                私密
+                                                </a-radio>
+                                                <a-radio :value="2">
+                                                密码
+                                                </a-radio>
+                                            </a-radio-group>
+                                        </a-form-item>
+                                        <a-form-item v-if="form.access_status===2" label="密码" name="password">
+                                            <a-input v-model:value="form.password" />
+                                        </a-form-item>
+                                    </a-collapse-panel>
+                                    <a-collapse-panel key="2" header="评论权限">
+                                        <a-alert v-if="form.show_comment===true" message="文章将展示评论区" type="info" show-icon></a-alert>
+                                        <a-alert v-else message="文章不会展示评论区" type="warning" show-icon></a-alert>
+
+                                        <a-alert v-if="form.allow_comment===true&&form.show_comment===true" message="允许用户评论" type="info" show-icon></a-alert>
+                                        <a-alert v-else message="用户无法评论" type="warning" show-icon></a-alert>
+
+                                        <a-form-item label="是否展示评论" name="show_comment">
+                                            <a-radio-group v-model:value="form.show_comment">
+                                                <a-radio :value="true">
+                                                展示
+                                                </a-radio>
+                                                <a-radio :value="false">
+                                                不展示
+                                                </a-radio>
+                                            </a-radio-group>
+                                        </a-form-item>
+                                        <a-form-item v-if="form.show_comment===true" label="是否允许评论" name="allow_comment">
+                                            <a-radio-group v-model:value="form.allow_comment">
+                                                <a-radio :value="true">
+                                                允许
+                                                </a-radio>
+                                                <a-radio :value="false" disabled>
+                                                不允许(暂未支持)
+                                                </a-radio>
+                                            </a-radio-group>
+                                        </a-form-item>
+                                    </a-collapse-panel>
+                               </a-collapse>
+                                <a-form-item>
+                                    {% if article_info %}
+                                    <a-button type="primary" @click="submit" style="margin-top: 20px">
+                                    更新
+                                    </a-button>
+                                    <a-button type="link" @click="window.open(article_path,'_blank')" style="margin-top: 20px;margin-left: 20px">
+                                    查看
+                                    </a-button>
+                                    {% else %}
+                                    <a-button type="primary" @click="submit" style="margin-top: 20px">
+                                    创建
+                                    </a-button>
+                                    {% endif %}
+                                </a-form-item>
+                              </a-form>
+                     </template>
+                 </div>
+             </section>
+          </aside>
+       </div>
+    </div>
+    <script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script src="/static/js/js.cookie.min.js"></script>
+    <script src="/static/js/prism.js"></script>
+    <script src="/static/js/editor/tinymce.min.js"></script>
+    <script src="/static/vue/vue.js"></script>
+    <script src="/static/antd/moment.min.js"></script>
+    <script src="/static/antd/antd.min.js"></script>
+    <script src="/static/js/editor.js"></script>
+
+</body>
+</html>

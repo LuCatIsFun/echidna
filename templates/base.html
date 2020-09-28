@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8" />
+    <title>{{ settings.title }}</title>
+
+	<!-- Meta Data -->
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="format-detection" content="telephone=no"/>
+    <meta name="format-detection" content="address=no"/>
+    <meta name="author" content="{{ settings.author }}" />
+    <meta name="description" content="{{ settings.description }}" />
+
+    <!--分享到其他平台时会自动加载的样式 https://segmentfault.com/a/1190000020199687 -->
+    <meta property="og:title" content="ArtTemplate" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="your url website" />
+    <meta property="og:image" content="/static/images/social.jpg" />
+    <meta property="og:description" content="{{ settings.description }}" />
+    <meta property="og:site_name" content="{{ settings.title }}" />
+
+	<!-- Favicons -->
+	<link rel="apple-touch-icon" sizes="144x144" href="/static/images/favicons/apple-touch-icon-144x144.png">
+	<link rel="apple-touch-icon" sizes="114x114" href="/static/images/favicons/apple-touch-icon-114x114.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="/static/images/favicons/apple-touch-icon-72x72.png">
+	<link rel="apple-touch-icon" sizes="57x57" href="/static/images/favicons/apple-touch-icon-57x57.png">
+	<link rel="shortcut icon" href="/static/images/favicons/favicon.ico">
+
+    <!-- Styles -->
+	<link rel="stylesheet" type="text/css" href="/static/styles/style.css"/>
+    {% if settings.theme == 'dark' %}
+     <link rel="stylesheet" type="text/css" href="/static/styles/style-dark.css" class="dark-mode-link" />
+     <link rel="stylesheet" type="text/css" href="/static/styles/prism-light.css" class="prism-theme-light-link" />
+    {% else %}
+     <link rel="stylesheet" type="text/css" href="/static/styles/prism.css" class="prism-theme-dark-link" />
+    {% endif %}
+    {% block css %}
+    {% endblock %}
+
+
+</head>
+<body>
+    <!-- Preloader -->
+    <div class="preloader">
+	    <div class="preloader__wrap">
+		    <div class="circle-pulse">
+                <div class="circle-pulse__1"></div>
+                <div class="circle-pulse__2"></div>
+            </div>
+		    <div class="preloader__progress"><span></span></div>
+		</div>
+	</div>
+    {% if request.resolver_match.url_name == "article" %}<div class="scroll-line"></div>{% endif %}
+
+    <div class="terminal-box">
+        <div class="container2">
+            <div class="window">
+                    <div class="handle" id="dragBoxBar">
+                            <div class="buttons">
+                                    <button class="close2">
+                                    </button>
+                                    <button class="minimize" disabled>
+                                    </button>
+                                    <button class="maximize" disabled>
+                                    </button>
+                            </div>
+                            <span class="title"></span>
+                    </div>
+                    <div id="terminal" class="terminal"></div>
+            </div>
+        </div>
+    </div>
+
+
+    <main class="main">
+	    <!-- Header Image -->
+		<div class="header-image">
+		    <div class="js-parallax" style="background-image: url({{ settings.background_image }});"></div>
+		</div>
+
+	    <div class="container gutter-top">
+		    <!-- Header -->
+		    <header class="header box">
+			    <div class="header__left">
+				    <div class="header__photo">
+					    <img class="header__photo-img" src="{{ settings.avatar }}" alt="Ronald Robertson">
+					</div>
+					<div class="header__base-info">
+					    <h4 class="title titl--h4">{{ settings.author }}</h4>
+						<div class="status">{{ settings.position }}</div>
+                        {% if settings.facebook or settings.twitter or settings.github %}
+						<ul class="header__social">
+						    {% if settings.facebook %}<li><a href="{{ settings.facebook}}"><i class="font-icon icon-facebook1"></i></a></li>{% endif %}
+                            {% if settings.twitter %}<li><a href="{{ settings.twitter}}"><i class="font-icon icon-twitter1"></i></a></li>{% endif %}
+                            {% if settings.github %}<li><a href="{{ settings.github }}"><i class="font-icon icon-github1"></i></a></li>{% endif %}
+						</ul>
+                        {% endif %}
+					</div>
+				</div>
+				<div class="header__right">
+				    <ul class="header__contact">
+					    {% if settings.email %}<li><span class="overhead">邮箱</span>{{ settings.email }}</li>{% endif %}
+						{% if settings.phone %}<li><span class="overhead">手机</span>{{ settings.phone }}</li>{% endif %}
+					</ul>
+					<ul class="header__contact">
+					    {% if settings.birthday %}<li><span class="overhead">生日</span>{{ settings.birthday }}</li>{% endif %}
+						{% if settings.location %}<li><span class="overhead">位置</span>{{ settings.location }}</li>{% endif %}
+					</ul>
+				</div>
+			</header>
+
+			<div class="row sticky-parent">
+			    <!-- Sidebar nav -->
+                <aside class="col-12 col-md-12 col-lg-2">
+				    <div class="sidebar box sticky-column">
+	                    <ul class="nav">
+                            <li class="nav__item"><a {% if request.resolver_match.url_name == "index" %} class="active" {% endif %} href="{% url 'index' %}"><i class="icon-book-open"></i>博客</a></li>
+{#                            <li class="nav__item"><a {% if request.resolver_match.url_name == "project" %} class="active" {% endif %} href="{% url 'project' %}"><i class="icon-codesandbox"></i>项目</a></li>#}
+                            {% if request.user.is_authenticated %}
+                            <li class="nav__item"><a href="{% url 'editor' %}"><i class="icon-edit"></i>编辑器</a></li>
+                            <li class="nav__item"><a href="{% url 'logout' %}"><i class="icon-log-out"></i>退出</a></li>
+                            {% else %}
+                            <li class="nav__item"><a id="show_terminal" href="#"><i class="icon-terminal"></i>终端</a></li>
+                            {% endif %}
+{#                            <li class="nav__item"><a {% if request.resolver_match.url_name == "about" %} class="active" {% endif %} href="{% url 'about' %}"><i class="icon-user"></i>关于我</a></li>#}
+                            <li class="nav__item switch-theme-box">
+                                <div class="wrapper">
+                                    <div class="toggle">
+                                        <input class="toggle-input" type="checkbox"/>
+                                        <div class="toggle-bg"></div>
+                                        <div class="toggle-switch">
+                                            <div class="toggle-switch-figure"></div>
+                                            <div class="toggle-switch-figureAlt"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+
+                        </ul>
+					</div>
+		        </aside>
+
+				<!-- Content -->
+
+		        <div class="col-12 col-md-12 col-lg-10">
+                    {% block content %}
+                    {% endblock %}
+					<!-- Footer -->
+					<footer class="footer">{{ settings.copyright }}</footer>
+		        </div>
+			</div>
+		</div>
+    </main>
+
+    <div class="back-to-top"></div>
+
+    <!-- SVG masks -->
+    <svg class="svg-defs">
+        <clipPath id="avatar-box">
+            <path d="M1.85379 38.4859C2.9221 18.6653 18.6653 2.92275 38.4858 1.85453 56.0986.905299 77.2792 0 94 0c16.721 0 37.901.905299 55.514 1.85453 19.821 1.06822 35.564 16.81077 36.632 36.63137C187.095 56.0922 188 77.267 188 94c0 16.733-.905 37.908-1.854 55.514-1.068 19.821-16.811 35.563-36.632 36.631C131.901 187.095 110.721 188 94 188c-16.7208 0-37.9014-.905-55.5142-1.855-19.8205-1.068-35.5637-16.81-36.63201-36.631C.904831 131.908 0 110.733 0 94c0-16.733.904831-37.9078 1.85379-55.5141z"/>
+        </clipPath>
+        <clipPath id="avatar-hexagon">
+             <path d="M0 27.2891c0-4.6662 2.4889-8.976 6.52491-11.2986L31.308 1.72845c3.98-2.290382 8.8697-2.305446 12.8637-.03963l25.234 14.31558C73.4807 18.3162 76 22.6478 76 27.3426V56.684c0 4.6805-2.5041 9.0013-6.5597 11.3186L44.4317 82.2915c-3.9869 2.278-8.8765 2.278-12.8634 0L6.55974 68.0026C2.50414 65.6853 0 61.3645 0 56.684V27.2891z"/>
+        </clipPath>
+    </svg>
+
+
+
+	<!-- JavaScripts -->
+	<script src="/static/js/jquery-3.4.1.min.js"></script>
+    <script src="/static/js/js.cookie.min.js"></script>
+	<script src="/static/js/plugins.min.js"></script>
+    <script src="/static/js/common.js"></script>
+
+    {% block js %}
+    {% endblock %}
+</body>
+</html>
