@@ -1,0 +1,112 @@
+.button-color-dust {
+  background-color: #F5222D;
+  border-color: #F5222D;
+}
+.button-color-dust:hover,
+.button-color-dust:focus {
+  background-color: #ff4d4f;
+  border-color: #ff4d4f;
+}
+.button-color-dust:active,
+.button-color-dust.active {
+  background-color: #cf1322;
+  border-color: #cf1322;
+}
+.button-color-volcano {
+  background-color: #FA541C;
+  border-color: #FA541C;
+}
+.button-color-volcano:hover,
+.button-color-volcano:focus {
+  background-color: #ff7a45;
+  border-color: #ff7a45;
+}
+.button-color-volcano:active,
+.button-color-volcano.active {
+  background-color: #d4380d;
+  border-color: #d4380d;
+}
+.button-color-sunset {
+  background-color: #FAAD14;
+  border-color: #FAAD14;
+}
+.button-color-sunset:hover,
+.button-color-sunset:focus {
+  background-color: #ffc53d;
+  border-color: #ffc53d;
+}
+.button-color-sunset:active,
+.button-color-sunset.active {
+  background-color: #d48806;
+  border-color: #d48806;
+}
+.button-color-cyan {
+  background-color: #13C2C2;
+  border-color: #13C2C2;
+}
+.button-color-cyan:hover,
+.button-color-cyan:focus {
+  background-color: #36cfc9;
+  border-color: #36cfc9;
+}
+.button-color-cyan:active,
+.button-color-cyan.active {
+  background-color: #08979c;
+  border-color: #08979c;
+}
+.button-color-green {
+  background-color: #52C41A;
+  border-color: #52C41A;
+}
+.button-color-green:hover,
+.button-color-green:focus {
+  background-color: #73d13d;
+  border-color: #73d13d;
+}
+.button-color-green:active,
+.button-color-green.active {
+  background-color: #389e0d;
+  border-color: #389e0d;
+}
+.button-color-daybreak {
+  background-color: #1890FF;
+  border-color: #1890FF;
+}
+.button-color-daybreak:hover,
+.button-color-daybreak:focus {
+  background-color: #096dd9;
+  border-color: #096dd9;
+}
+.button-color-daybreak:active,
+.button-color-daybreak.active {
+  background-color: #40a9ff;
+  border-color: #40a9ff;
+}
+.button-color-geekblue {
+  background-color: #2F54EB;
+  border-color: #2F54EB;
+}
+.button-color-geekblue:hover,
+.button-color-geekblue:focus {
+  background-color: #1d39c4;
+  border-color: #1d39c4;
+}
+.button-color-geekblue:active,
+.button-color-geekblue.active {
+  background-color: #597ef7;
+  border-color: #597ef7;
+}
+.button-color-purple {
+  background-color: #722ED1;
+  border-color: #722ED1;
+}
+.button-color-purple:hover,
+.button-color-purple:focus {
+  background-color: #9254de;
+  border-color: #9254de;
+}
+.button-color-purple:active,
+.button-color-purple.active {
+  background-color: #531dab;
+  border-color: #531dab;
+}

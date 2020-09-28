@@ -1,0 +1,38 @@
+
+.btnSlideNav {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  cursor: pointer;
+}
+
+.slideOpen {
+  background: linear-gradient(to right, #308cf1 0%, #2359ee 100%);
+  border-radius: 50%;
+  box-shadow: 0 10px 15px rgba(0, 69, 255, 0.2);
+  bottom: 2rem;
+  right: 2rem;
+  width: 48px;
+  height: 48px;
+  position: fixed;
+  opacity: 1;
+  transition: all .3s ease-in;
+  z-index: 1010;
+}
+.slideOpen::before {
+  background-image: url("../images/edit.svg");
+  background-position: center;
+  background-size: 45%;
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 100%;
+}
+.slideOpen:hover {
+  opacity: 1;
+
+}

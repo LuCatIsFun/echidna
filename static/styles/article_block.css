@@ -1,0 +1,207 @@
+.container p {
+  color: #000;
+  font-size: 1.5em;
+  text-align: center;
+}
+.container p strong {
+  font-weight: 400;
+}
+
+.container button {
+  display: block;
+  margin: 50px auto 20px;
+  padding: 10px 20px;
+  font-size: 2em;
+  border-radius: 2px;
+  border: none;
+  background: white;
+}
+
+.container section {
+  padding-top: 100px;
+}
+
+@-webkit-keyframes showAsterisk {
+  0% {
+    -webkit-transform: translate(0, 40px);
+            transform: translate(0, 40px);
+  }
+  100% {
+    -webkit-transform: translate(0px, 0px);
+            transform: translate(0px, 0px);
+  }
+}
+
+@keyframes showAsterisk {
+  0% {
+    -webkit-transform: translate(0, 40px);
+            transform: translate(0, 40px);
+  }
+  100% {
+    -webkit-transform: translate(0px, 0px);
+            transform: translate(0px, 0px);
+  }
+}
+@-webkit-keyframes flicker {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes flicker {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@-webkit-keyframes shake {
+  0%, 100% {
+    -webkit-transform: translate(0px, 0px);
+            transform: translate(0px, 0px);
+  }
+  14% {
+    -webkit-transform: translate(-10px, 0px);
+            transform: translate(-10px, 0px);
+  }
+  28% {
+    -webkit-transform: translate(10px, 0px);
+            transform: translate(10px, 0px);
+  }
+  42% {
+    -webkit-transform: translate(-10px, 0px);
+            transform: translate(-10px, 0px);
+  }
+  56% {
+    -webkit-transform: translate(10px, 0px);
+            transform: translate(10px, 0px);
+  }
+  70% {
+    -webkit-transform: translate(-10px, 0px);
+            transform: translate(-10px, 0px);
+  }
+  84% {
+    -webkit-transform: translate(10px, 0px);
+            transform: translate(10px, 0px);
+  }
+}
+@keyframes shake {
+  0%, 100% {
+    -webkit-transform: translate(0px, 0px);
+            transform: translate(0px, 0px);
+  }
+  14% {
+    -webkit-transform: translate(-10px, 0px);
+            transform: translate(-10px, 0px);
+  }
+  28% {
+    -webkit-transform: translate(10px, 0px);
+            transform: translate(10px, 0px);
+  }
+  42% {
+    -webkit-transform: translate(-10px, 0px);
+            transform: translate(-10px, 0px);
+  }
+  56% {
+    -webkit-transform: translate(10px, 0px);
+            transform: translate(10px, 0px);
+  }
+  70% {
+    -webkit-transform: translate(-10px, 0px);
+            transform: translate(-10px, 0px);
+  }
+  84% {
+    -webkit-transform: translate(10px, 0px);
+            transform: translate(10px, 0px);
+  }
+}
+.pw-fancy {
+  height: 3rem;
+  max-width: 500px;
+  margin: 3rem auto;
+  position: relative;
+  border-bottom: 4px solid #000;
+  padding-left: 12px;
+  padding-right: 12px;
+  padding-bottom: 5px;
+}
+.pw-fancy label {
+  position: relative;
+  height: 3rem;
+  width: 100%;
+}
+.pw-fancy.warning {
+  -webkit-animation: shake 500ms forwards ease-out;
+          animation: shake 500ms forwards ease-out;
+  border-color: #EF9A9A;
+}
+.pw-fancy.warning .pw-fancy--asterisks i {
+  color: #F44336;
+}
+.pw-fancy.warning:before, .pw-fancy.warning:after {
+  background-color: #EF9A9A;
+}
+.pw-fancy input {
+  background: transparent;
+  border: none;
+  height: 3rem;
+  position: absolute;
+  width: 100%;
+  top: 0;
+  left: 0;
+  display: block;
+  font-size: 3em;
+  opacity: 0;
+  z-index: 200;
+}
+.pw-fancy:before, .pw-fancy:after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  display: block;
+  width: 4px;
+  height: 15px;
+  background: #000;
+}
+.pw-fancy:after {
+  left: 0;
+}
+.pw-fancy:before {
+  right: 0;
+}
+
+.pw-fancy--asterisks {
+  position: relative;
+  z-index: 100;
+  height: 3em;
+  padding-left: 12px;
+  padding-right: 12px;
+  overflow: hidden;
+  display: -webkit-box;
+  display: flex;
+  -webkit-transition: 250ms ease-out all;
+  transition: 250ms ease-out all;
+}
+.pw-fancy--asterisks:empty:before {
+  content: "";
+  border-left: 2px solid black;
+  -webkit-animation: flicker 500ms infinite alternate ease-out;
+          animation: flicker 500ms infinite alternate ease-out;
+}
+.pw-fancy--asterisks.pw-long {
+  font-size: 0.5em;
+}
+.pw-fancy--asterisks.pw-longer {
+  font-size: 0.25em;
+}
+.pw-fancy--asterisks i {
+  margin-right: 0.25em;
+  display: block;
+  color: #000;
+  font-size: 3em;
+  -webkit-animation: showAsterisk 250ms forwards cubic-bezier(0, 0.75, 0.75, 1.25);
+          animation: showAsterisk 250ms forwards cubic-bezier(0, 0.75, 0.75, 1.25);
+}
