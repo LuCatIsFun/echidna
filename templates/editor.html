@@ -296,6 +296,9 @@
                                     <a-button type="link" @click="window.open(article_path,'_blank')" style="margin-top: 20px;margin-left: 20px">
                                     查看
                                     </a-button>
+                                    <a-button type="link" @click="delete_article" style="margin-top: 20px">
+                                    删除
+                                    </a-button>
                                     {% else %}
                                     <a-button type="primary" @click="submit" style="margin-top: 20px">
                                     创建

@@ -138,6 +138,11 @@ class ArticleDetail(APIView):
 
         return request.response.SUCCESS(msg='文章更新成功')
 
+    def delete(self, request, article_id):
+        article_info = get_object_or_404(models.Article, pk=article_id)
+        article_info.delete()
+        return request.response.SUCCESS(msg='文章删除成功')
+
 
 class ArticleVerify(APIView):
     authentication_classes = []

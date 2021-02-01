@@ -165,6 +165,45 @@ var app = new Vue({
                 }
             });
         },
+        delete_article(){
+            this.$confirm({
+                title: '警告',
+                okText: '确认删除',
+                cancelText: '取消',
+                content: '删除后将无法恢复，确认删除此文章 ？',
+                onOk() {
+                    $.ajax({
+                        type: 'DELETE',
+                        url: '/api/article/editor/'+article_id+'/',
+                        headers:{
+                            'token': Cookies.get('token')
+                        },
+                        success: function (data) {
+                            antd.message[data.code===0 ? 'success': 'error'](data.msg)
+                            if (data.code===0){
+                                setTimeout(function () {
+                                    window.location.href = '/'
+                                }, 1000)
+                            }
+                        },
+                        error: function (error) {
+                            try {
+                                let response = JSON.parse(error.responseText);
+                                if (response.msg) {
+                                    antd.message.error(response.msg);
+                                } else {
+                                    antd.message.error(error.statusText);
+                                }
+                            } catch (e) {
+                                antd.message.error(error.statusText);
+                            }
+                        }
+                    });
+                },
+                onCancel() {
+                },
+            });
+        },
         save_draft(){
             this.save_draft_model_visible = true;
         },
