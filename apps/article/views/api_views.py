@@ -104,7 +104,7 @@ class ArticleDetail(APIView):
         if not all([title]):
             return request.response.FAILED(msg='更新文章失败，标题不能为空')
         else:
-            if models.Article.objects.filter(Q(title=title) | Q(slug=slugify(title)) & ~Q(id=article_id)):
+            if models.Article.objects.filter(~Q(id=article_id), **{'title': title, 'slug': slugify(title)}):
                 return request.response.FAILED(msg='更新文章失败，标题与其他已存在文章重复')
             if show_comment in Article.COMMENT_STATUS and allow_comment in Article.COMMENT_STATUS:
                 show_comment = self.tools.try_safe_eval(show_comment)
